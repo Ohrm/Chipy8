@@ -2,3 +2,6 @@ Debug/
 Release/
 SDL2.dll
 Invaders.ch8
+Chipy8.vcxproj
+Chipy8.vcxproj.filters
+Chipy8.vcxproj.user
