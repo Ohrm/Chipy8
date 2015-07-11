@@ -85,8 +85,6 @@ void chip8::EmualteCycle(){
     //Fetch opcode
     opcode = memory[pc] << 8 | memory[pc + 1];
 
-    printf(" opcode: 0x%X", opcode);
-
     //Decode opcode then execute
     switch(opcode & 0xF000){
 
