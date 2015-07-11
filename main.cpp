@@ -15,6 +15,14 @@ unsigned char screenData[320][640][3] ;
 
 int main(int argc, char **argv){
 
+	if(argc != 2){
+
+		printf("Usage: Chip8 <ROM Name>.ch8");
+		return 1;
+
+	}
+
+
     // Setup Graphics
 	if( SDL_Init( SDL_INIT_EVERYTHING ) < 0 )
 	{
@@ -42,7 +50,7 @@ int main(int argc, char **argv){
 
     // Init the CPU and load the game
     myChip8.Init();
-    if(!myChip8.LoadGame("Invaders.ch8"))
+    if(!myChip8.LoadGame(argv[1]))
 		return 1;
 
 	bool quit = false;;
