@@ -55,7 +55,7 @@ void chip8::Init(){
     delayTimer = 0;
     soundTimer = 0;
 
-	drawFlag = true;
+	drawFlag = false;
 
 }
 
@@ -375,7 +375,11 @@ void chip8::EmualteCycle(){
 
     }
 
-    //Update timers
+}
+
+void chip8::DecreaseTimers(){
+
+	 //Update timers
     if(delayTimer > 0)
     --delayTimer;
 
@@ -385,11 +389,5 @@ void chip8::EmualteCycle(){
         printf("BEEP!\n");
         --soundTimer;
     }
-
-}
-
-void chip8::SetKeys(){
-
-
 
 }

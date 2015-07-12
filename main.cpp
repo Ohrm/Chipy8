@@ -7,6 +7,7 @@ chip8 myChip8;
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 320;
+const int SCREEN_FPS = 60;
 
 void drawGraphics();
 void handleInput(SDL_Event *e);
@@ -53,57 +54,24 @@ int main(int argc, char **argv){
     if(!myChip8.LoadGame(argv[1]))
 		return 1;
 
-	bool quit = false;;
+	bool quit = false;
 
 	SDL_Event e;
 
+	char fps = 60;
+
+	int numOpCodes = 600;
+
+	int numFrame = numOpCodes / fps;
+
+	float interval = 1000;
+
+	interval /= fps;
+
+	unsigned int time2 = SDL_GetTicks();
+
     //Emulation loop
     for(;;){
-
-        //Emulate one cycle
-        myChip8.EmualteCycle();
-
-        //If draw flag is set update screen
-        if(myChip8.drawFlag){
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glLoadIdentity();
-		glRasterPos2i(-1, 1);
-		glPixelZoom(1, -1);
-
-		for(unsigned char y = 0; y < 32; y++){
-
-			unsigned short resY = y * 10;
-
-			for(unsigned char x = 0; x < 64; x++){
-
-				unsigned short resX = x * 10;
-
-				if(myChip8.gfx[(y * 64) + x] == 0){
-
-					for(unsigned char i = 0; i < 10; i++)
-						for(unsigned char j = 0; j < 10; j++)
-							screenData[resY + i][resX + j][0] = screenData[resY + i][resX + j][1] = screenData[resY + i][resX + j][2] = 0;	// Disabled
-				
-				}
-				else{
-					
-					for(int i = 0; i < 10; i++)
-						for(int j = 0; j < 10; j++)
-							screenData[resY + i][resX + j][0] = screenData[resY + i][resX + j][1] = screenData[resY + i][resX + j][2] = 255;  // Enabled
-
-				}
-			}
-
-		}
-
-		glDrawPixels(SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE, screenData);
-		SDL_GL_SwapWindow(window);
-		glFlush();
-		myChip8.drawFlag = false;
-		}
-        // Store key press state (pressed or released)
-        myChip8.SetKeys();
 
 		while(SDL_PollEvent(&e) != 0){
 
@@ -122,6 +90,58 @@ int main(int argc, char **argv){
 
 		}
 
+		unsigned int current = SDL_GetTicks();
+
+		if((time2 + interval) < current){
+
+			myChip8.DecreaseTimers( ) ;
+			for (int i = 0 ; i < numFrame; i++)
+				myChip8.EmualteCycle();
+
+			time2 = current;
+
+			 //If draw flag is set update screen
+			if(myChip8.drawFlag){
+
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glLoadIdentity();
+				glRasterPos2i(-1, 1);
+				glPixelZoom(1, -1);
+
+				for(unsigned char y = 0; y < 32; y++){
+
+					unsigned short resY = y * 10;
+
+					for(unsigned char x = 0; x < 64; x++){
+
+						unsigned short resX = x * 10;
+
+						if(myChip8.gfx[(y * 64) + x] == 0){
+
+							for(unsigned char i = 0; i < 10; i++)
+								for(unsigned char j = 0; j < 10; j++)
+									screenData[resY + i][resX + j][0] = screenData[resY + i][resX + j][1] = screenData[resY + i][resX + j][2] = 0;	// Disabled
+				
+						}
+						else{
+					
+							for(int i = 0; i < 10; i++)
+								for(int j = 0; j < 10; j++)
+									screenData[resY + i][resX + j][0] = screenData[resY + i][resX + j][1] = screenData[resY + i][resX + j][2] = 255;  // Enabled
+
+						}
+					}
+
+				}
+
+				glDrawPixels(SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE, screenData);
+				SDL_GL_SwapWindow(window);
+				glFlush();
+				myChip8.drawFlag = false;
+			}
+
+		}
+
 		if(quit){
 
 			SDL_DestroyWindow(window);
@@ -129,6 +149,8 @@ int main(int argc, char **argv){
 			break;
 		
 		}
+
+		
     }
 
     return 0;

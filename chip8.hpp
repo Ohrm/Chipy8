@@ -10,7 +10,7 @@ public:
     void Init();
     bool LoadGame(char* name);
     void EmualteCycle();
-    void SetKeys();
+	void DecreaseTimers();
     bool drawFlag;
     unsigned char gfx[64*32];
 	unsigned char key[16];
