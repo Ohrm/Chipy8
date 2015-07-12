@@ -385,8 +385,6 @@ void chip8::DecreaseTimers(){
 
     if(soundTimer > 0)
     {
-        if(soundTimer == 1)
-        printf("BEEP!\n");
         --soundTimer;
     }
 

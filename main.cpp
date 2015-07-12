@@ -1,6 +1,7 @@
 #include "chip8.hpp" // CPU core
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <SDL_mixer.h>
 #include <stdio.h>
 
 chip8 myChip8;
@@ -12,7 +13,9 @@ const int SCREEN_FPS = 60;
 void drawGraphics();
 void handleInput(SDL_Event *e);
 
-unsigned char screenData[320][640][3] ; 
+unsigned char screenData[320][640][3]; 
+
+Mix_Chunk *soundBeep = NULL;
 
 int main(int argc, char **argv){
 
@@ -47,7 +50,19 @@ int main(int argc, char **argv){
 	glDisable(GL_DITHER);
 	glDisable(GL_BLEND);
 
-    // SetupInput();
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0)
+    {
+		printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+        return 1;
+    }
+
+	//Load sound effects
+    soundBeep = Mix_LoadWAV( "Beep.wav" );
+	if(soundBeep == NULL )
+    {
+        printf("Failed to load scratch sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+        return 3;
+    }
 
     // Init the CPU and load the game
     myChip8.Init();
@@ -95,6 +110,8 @@ int main(int argc, char **argv){
 		if((time2 + interval) < current){
 
 			myChip8.DecreaseTimers( ) ;
+			if(myChip8.soundTimer == 1)
+				Mix_PlayChannel( -1, soundBeep, 0 );
 			for (int i = 0 ; i < numFrame; i++)
 				myChip8.EmualteCycle();
 
@@ -145,6 +162,8 @@ int main(int argc, char **argv){
 		if(quit){
 
 			SDL_DestroyWindow(window);
+			Mix_FreeChunk(soundBeep);
+			Mix_Quit();
 			SDL_Quit();
 			break;
 		

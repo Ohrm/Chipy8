@@ -14,12 +14,12 @@ public:
     bool drawFlag;
     unsigned char gfx[64*32];
 	unsigned char key[16];
+	unsigned char soundTimer;
 
 private:
     unsigned char memory[4096];
     unsigned char V[16];
     unsigned char delayTimer;
-    unsigned char soundTimer;
 
     unsigned short opcode;
     unsigned short I;
