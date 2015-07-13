@@ -252,11 +252,15 @@ void chip8::EmualteCycle(){
 
                     if((pixel & (0x80 >> xline)) != 0){
 
-                        if(gfx[(x + xline + ((y + yline) * 64))] == 1)
-                            V[0xF] = 1;
-                        gfx[x + xline + ((y + yline) * 64)] ^= 1;
+						if((x + xline) < 64 && (y + yline) < 32){
 
-                    }
+							if(gfx[(x + xline + ((y + yline) * 64))] == 1)
+								V[0xF] = 1;
+							gfx[x + xline + ((y + yline) * 64)] ^= 1;
+						
+						}
+                    
+					}
 
                 }
 

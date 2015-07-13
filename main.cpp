@@ -10,7 +10,6 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 320;
 const int SCREEN_FPS = 60;
 
-void drawGraphics();
 void handleInput(SDL_Event *e);
 
 unsigned char screenData[320][640][3]; 
@@ -117,7 +116,7 @@ int main(int argc, char **argv){
 
 			time2 = current;
 
-			 //If draw flag is set update screen
+			//If draw flag is set update screen
 			if(myChip8.drawFlag){
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -173,11 +172,6 @@ int main(int argc, char **argv){
     }
 
     return 0;
-
-}
-
-void drawGraphics(){
-
 
 }
 
